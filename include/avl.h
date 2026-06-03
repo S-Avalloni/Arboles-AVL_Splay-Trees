@@ -41,8 +41,10 @@ Avl* search(Avl* arbol, int x);
 // x: El elemento a instertar
 // inserta el elemento x en el arbol, x no puede estar ya en
 // el arbol. Mantiene la invariante del balance factor y
-// recalcula las alturas de los subarboles tocados 
-int insert(Avl* arbol, int x);
+// recalcula las alturas de los subarboles tocados.
+// Retorna el puntero a la raiz, normalmente va a ser el mismo
+// valor pero es necesario en caso de que se modifique la raiz
+Avl* insert(Avl* arbol, int x);
 
 
 

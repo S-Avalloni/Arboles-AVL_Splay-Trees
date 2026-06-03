@@ -35,11 +35,11 @@ Avl* zig(Avl* arbol) {
   return nueva_raiz;
 }
 
-int zag(Avl* arbol) {
+Avl* zag(Avl* arbol) {
   Avl* nueva_raiz = arbol->B;
   if (nueva_raiz == NULL) {
     perror("Lado derecho del arbol no puede ser nulo");
-    return 0;
+    return NULL;
   }
   arbol->B = (nueva_raiz)->A;
   nueva_raiz->A = arbol;
@@ -48,8 +48,7 @@ int zag(Avl* arbol) {
   arbol->altura = 1 + max(altura(arbol->A), altura(arbol->B));
   nueva_raiz->altura = 1 + max(altura(nueva_raiz->A),altura(nueva_raiz->B));
 
-  arbol = nueva_raiz;
-  return 1;
+  return nueva_raiz;
 }
 
 Avl* search(Avl* arbol, int x) {
@@ -65,26 +64,27 @@ Avl* search(Avl* arbol, int x) {
       current = current -> B;
     }
   }
+
+  return current;
 }
 
-int insert(Avl* arbol, int x) {
+Avl* insert(Avl* arbol, int x) {
   if (arbol == NULL) {
     
     arbol = malloc(sizeof(Avl));
-    if (arbol == NULL) return 1;
 
     arbol->r = x;
     arbol->A = NULL;
     arbol->B = NULL;
     arbol->altura = 1;
-    return 1;
+    return arbol;
   } else if (arbol -> r > x) {
-    insert(arbol->A, x);
+    arbol->A = insert(arbol->A, x);
   } else if (arbol -> r < x){
-    insert(arbol -> B, x);
+    arbol->B = insert(arbol -> B, x);
   } else {
     perror("No se pueden insertar un elemento repetido");
-    return 0;
+    return arbol;
   }
 
 
@@ -93,38 +93,21 @@ int insert(Avl* arbol, int x) {
   int bf_B    = balance_factor(arbol->B);
 
   if (bf_root == 2 && bf_A >= 0) {      // LL
-    if (zig(arbol) == 0) {
-      perror("arbol raiz nulo en operacion LL");
-      return 0;
-    }
+    arbol = zig(arbol);
   } else if (bf_root == -2 && bf_B <= 0) { // RR
-    if (zag(arbol) == 0) {
-      perror("arbol raiz nulo en operacion RR");
-      return 0;
-    }
+    arbol = zag(arbol);
   } else if (bf_root == 2 && bf_A < 0) {  // LR
-    if (zag(arbol->A) == 0) {
-      perror("arbol izquierdo nulo en operacion LR");
-      return 0;
-    }
-
-    if (zig(arbol) == 0) {
-      perror("arbol raiz nulo en operacion LR");
-      return 0;
-    }
+    arbol->A = zag(arbol->A);
+    arbol = zig(arbol);
   } else if (bf_root == -2 && bf_B > 0) { // RL
-    if (zag(arbol->B) == 0) {
-      perror("arbol derecho nulo en operacion LR");
-      return 0;
-    }
-
-    if (zig(arbol) == 0) {
-      perror("arbol raiz nulo en operacion LR");
-      return 0;
-    }
+    arbol->B = zag(arbol->B);
+    arbol = zig(arbol);
   } else {
     arbol->altura = 1 + max(altura(arbol->A), altura(arbol->B));
   }
 
-  return 0;
+  if (arbol == NULL) {
+    perror("Hubo un error y no se insertó bien el elemento");
+  }
+  return arbol;
 }
