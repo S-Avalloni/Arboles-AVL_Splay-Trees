@@ -1,6 +1,8 @@
 #ifndef AVL
 #define AVL
 
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+
 typedef struct Nodo_Avl { // Sería lo que se define como r(A, B)
   int r; // Dato del nodo
   struct Nodo_Avl* A; // Arbol izquierdo

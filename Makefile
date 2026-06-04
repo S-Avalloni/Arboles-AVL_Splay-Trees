@@ -1,4 +1,4 @@
-flags = -fsanitize=undefined,address -g -Wall -Wextra -std=c11
+flags = -fsanitize=undefined,address,leak -fno-omit-frame-pointer -g -Wall -Wextra -std=c11
 avl = build/avl.o
 splay = build/splay.o
 
@@ -13,17 +13,15 @@ run-main: build/main
 
 main: build/main
 
-build/main: src/main.c $(avl) $(splay)
-	gcc $(flags) $(avl) $(splay) src/main.c -o build/main
+build/main: src/main.c $(splay)
+	gcc $(flags) $(splay) src/main.c -o build/main
 
 $(avl): include/avl.h include/avl.c
-	gcc $(flags) -c include/avl.c -o outputs/avl.o
+	gcc $(flags) -c include/avl.c -o build/avl.o
 
-$(splay): include/avl.h include/avl.c
-	gcc $(flags) -c include/avl.c -o outputs/avl.o
-
-clean-v:
-	rm -f vectores/*
+$(splay): include/splay.h include/splay.c
+	gcc $(flags) -c include/splay.c -o build/splay.o
 
 clean-x:
-	rm -f outputs/*
+	rm -f build/*
+

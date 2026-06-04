@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "splay.h"
 
 SplayTree* izq(SplayTree* arbol) {
@@ -28,7 +29,7 @@ SplayTree* pad(SplayTree* arbol) {
 
 SplayTree* zig(SplayTree* arbol) {
   if (izq(arbol) == NULL) {
-    perror("No se puede hacer zig con nodo nulo o nodo izquierdo nulo");
+    perror("No se puede hacer zig con nodo nulo o nodo izquierdo nulo\n");
     return arbol;
   }
   
@@ -46,7 +47,7 @@ SplayTree* zig(SplayTree* arbol) {
     arbol->A->B->Padre = arbol;
   }
 
-  SplayTree* temp = arbol->A->B;
+  temp = arbol->A->B;
   arbol->A->B = arbol;
   arbol->Padre = arbol->A;
   arbol->A = temp;
@@ -56,7 +57,7 @@ SplayTree* zig(SplayTree* arbol) {
 
 SplayTree* zag(SplayTree* arbol) {
   if (der(arbol) == NULL) {
-    perror("No se puede hacer zag con nodo nulo o nodo derecho nulo");
+    perror("No se puede hacer zag con nodo nulo o nodo derecho nulo\n");
     return arbol;
   }
   
@@ -74,7 +75,7 @@ SplayTree* zag(SplayTree* arbol) {
     arbol->B->A->Padre = arbol;
   }
 
-  SplayTree* temp = arbol->B->A;
+  temp = arbol->B->A;
   arbol->B->A = arbol;
   arbol->Padre = arbol->B;
   arbol->B = temp;
@@ -134,6 +135,8 @@ SplayTree* splay(SplayTree* arbol) {
       return zag(arbol->Padre);
     }
   }
+
+  return arbol;
 }
 
 SplayTree* search(SplayTree* arbol, int x) {
@@ -212,3 +215,23 @@ SplayTree* insert(SplayTree* arbol, int x) {
   }
 
 }
+
+void delete(SplayTree* arbol) {
+  if (arbol == NULL) {
+    return;
+  }
+
+  if (arbol->A != NULL) {
+    delete(arbol->A);
+    arbol->A = NULL;
+  }
+  
+  if (arbol->B != NULL) {
+    delete(arbol->B);
+    arbol->B = NULL;
+  }
+
+  free(arbol);
+  return;
+}
+

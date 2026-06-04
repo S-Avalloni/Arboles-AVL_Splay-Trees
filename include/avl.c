@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "avl.h"
 
 
@@ -22,7 +23,7 @@ int balance_factor(Avl* arbol) {
 Avl* zig(Avl* arbol) {
   Avl* nueva_raiz = arbol->A;
   if (nueva_raiz == NULL) {
-    perror("Lado izquierdo del arbol no puede ser nulo");
+    perror("Lado izquierdo del arbol no puede ser nulo\n");
     return NULL;
   }
   arbol->A = (nueva_raiz)->B;
@@ -38,7 +39,7 @@ Avl* zig(Avl* arbol) {
 Avl* zag(Avl* arbol) {
   Avl* nueva_raiz = arbol->B;
   if (nueva_raiz == NULL) {
-    perror("Lado derecho del arbol no puede ser nulo");
+    perror("Lado derecho del arbol no puede ser nulo\n");
     return NULL;
   }
   arbol->B = (nueva_raiz)->A;
@@ -83,7 +84,7 @@ Avl* insert(Avl* arbol, int x) {
   } else if (arbol -> r < x){
     arbol->B = insert(arbol -> B, x);
   } else {
-    perror("No se pueden insertar un elemento repetido");
+    perror("No se pueden insertar un elemento repetido\n");
     return arbol;
   }
 
@@ -107,7 +108,26 @@ Avl* insert(Avl* arbol, int x) {
   }
 
   if (arbol == NULL) {
-    perror("Hubo un error y no se insertó bien el elemento");
+    perror("Hubo un error y no se insertó bien el elemento\n");
   }
   return arbol;
+}
+
+void delete(Avl* arbol) {
+  if (arbol == NULL) {
+    return;
+  }
+
+  if (arbol->A != NULL) {
+    delete(arbol->A);
+    arbol->A = NULL;
+  }
+  
+  if (arbol->B != NULL) {
+    delete(arbol->B);
+    arbol->B = NULL;
+  }
+
+  free(arbol);
+  return;
 }

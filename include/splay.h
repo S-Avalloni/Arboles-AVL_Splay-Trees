@@ -1,6 +1,8 @@
 #ifndef SPLAY
 #define SPLAY
 
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+
 // Un nodo del SplayTree según la recomendación del paper original
 // https://www.cs.cmu.edu/~sleator/papers/self-adjusting.pdf
 typedef struct Nodo_splay { // Sería lo que se define como r(A, B)
@@ -59,6 +61,6 @@ SplayTree* search(SplayTree* arbol, int x);
 SplayTree* insert(SplayTree* arbol, int x);
 
 
-
+void delete(SplayTree* arbol);
 
 #endif
