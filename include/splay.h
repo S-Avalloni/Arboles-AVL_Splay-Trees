@@ -1,12 +1,29 @@
 #ifndef SPLAY
 #define SPLAY
 
+// Un nodo del SplayTree según la recomendación del paper original
+// https://www.cs.cmu.edu/~sleator/papers/self-adjusting.pdf
 typedef struct Nodo_splay { // Sería lo que se define como r(A, B)
   int r; // Dato del nodo
   struct Nodo_splay* A; // Arbol izquierdo
   struct Nodo_splay* B; // Arbol derecho
+  struct Nodo_splay* Padre; // Puntero al padre
 } SplayTree;
 
+// arbol: Puntero al arbol al que se le consulta su izq, función
+// se define para no tener que chequear si es que arbol es nulo
+// cada vez. izq(NULL) == NULL
+SplayTree* izq(SplayTree* arbol);
+
+// arbol: Puntero al arbol al que se le consulta su der, función
+// se define para no tener que chequear si es que arbol es nulo
+// cada vez. der(NULL) == NULL
+SplayTree* der(SplayTree* arbol);
+
+// arbol: Puntero al arbol al que se le consulta su pad, función
+// se define para no tener que chequear si es que arbol es nulo
+// cada vez. pad(NULL) == NULL
+SplayTree* pad(SplayTree* arbol);
 
 // arbol: puntero a la raiz del arbol al que se le va a hacer
 // la operación zig (rotación a la derecha).
@@ -20,6 +37,14 @@ SplayTree* zig(SplayTree* arbol);
 // Retorna NULL si es que es el caso y la nueva raiz sinó
 SplayTree* zag(SplayTree* arbol);
 
+
+SplayTree* zigzig(SplayTree* arbol);
+SplayTree* zagzag(SplayTree* arbol);
+SplayTree* zigzag(SplayTree* arbol);
+SplayTree* zagzig(SplayTree* arbol);
+
+SplayTree* splay(SplayTree* arbol);
+
 // arbol: El arbol donde se busca el elemento
 // x: El elemento a buscar
 // busca el elemento x en arbol y retorna un puntero a el,
@@ -31,7 +56,7 @@ SplayTree* search(SplayTree* arbol, int x);
 // inserta el elemento x en el arbol, x no puede estar ya en
 // el arbol. Mantiene la invariante del balance factor y
 // recalcula las alturas de los subarboles tocados 
-int insert(SplayTree* arbol, int x);
+SplayTree* insert(SplayTree* arbol, int x);
 
 
 
