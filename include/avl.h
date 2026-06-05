@@ -49,6 +49,6 @@ Avl* search_avl(Avl* arbol, int x);
 Avl* insert_avl(Avl* arbol, int x);
 
 
-
+void delete_avl(Avl* arbol);
 
 #endif
