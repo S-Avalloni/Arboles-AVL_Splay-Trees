@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "splay.h"
 
-SplayTree* izq(SplayTree* arbol) {
+SplayTree* izq_spl(SplayTree* arbol) {
   if (arbol == NULL || arbol->A == NULL) {
     return NULL;
   }
@@ -10,7 +10,7 @@ SplayTree* izq(SplayTree* arbol) {
   return arbol->A;
 }
 
-SplayTree* der(SplayTree* arbol) {
+SplayTree* der_spl(SplayTree* arbol) {
   if (arbol == NULL || arbol->B == NULL) {
     return NULL;
   }
@@ -18,7 +18,7 @@ SplayTree* der(SplayTree* arbol) {
   return arbol->B;
 }
 
-SplayTree* pad(SplayTree* arbol) {
+SplayTree* pad_spl(SplayTree* arbol) {
   if (arbol == NULL || arbol->Padre == NULL) {
     return NULL;
   }
@@ -27,23 +27,23 @@ SplayTree* pad(SplayTree* arbol) {
 }
 
 
-SplayTree* zig(SplayTree* arbol) {
-  if (izq(arbol) == NULL) {
+SplayTree* zig_spl(SplayTree* arbol) {
+  if (izq_spl(arbol) == NULL) {
     perror("No se puede hacer zig con nodo nulo o nodo izquierdo nulo\n");
     return arbol;
   }
   
-  if (pad(arbol) != NULL) {
-    if (pad(arbol)->A == arbol) {
-      pad(arbol)->A = arbol->A;
+  if (pad_spl(arbol) != NULL) {
+    if (pad_spl(arbol)->A == arbol) {
+      pad_spl(arbol)->A = arbol->A;
     } else {
-      pad(arbol)->B = arbol->A;
+      pad_spl(arbol)->B = arbol->A;
     }
   }
 
   SplayTree* temp;
-  arbol->A->Padre = pad(arbol);
-  if (der(arbol->A) != NULL) {
+  arbol->A->Padre = pad_spl(arbol);
+  if (der_spl(arbol->A) != NULL) {
     arbol->A->B->Padre = arbol;
   }
 
@@ -55,23 +55,23 @@ SplayTree* zig(SplayTree* arbol) {
   return arbol->Padre;
 }
 
-SplayTree* zag(SplayTree* arbol) {
-  if (der(arbol) == NULL) {
+SplayTree* zag_spl(SplayTree* arbol) {
+  if (der_spl(arbol) == NULL) {
     perror("No se puede hacer zag con nodo nulo o nodo derecho nulo\n");
     return arbol;
   }
   
-  if (pad(arbol) != NULL) {
-    if (pad(arbol)->A == arbol) {
-      pad(arbol)->A = arbol->B;
+  if (pad_spl(arbol) != NULL) {
+    if (pad_spl(arbol)->A == arbol) {
+      pad_spl(arbol)->A = arbol->B;
     } else {
-      pad(arbol)->B = arbol->B;
+      pad_spl(arbol)->B = arbol->B;
     }
   }
 
   SplayTree* temp;
-  arbol->B->Padre = pad(arbol);
-  if (izq(arbol->B) != NULL) {
+  arbol->B->Padre = pad_spl(arbol);
+  if (izq_spl(arbol->B) != NULL) {
     arbol->B->A->Padre = arbol;
   }
 
@@ -84,62 +84,62 @@ SplayTree* zag(SplayTree* arbol) {
 
 }
 
-SplayTree* zigzig(SplayTree* arbol) {
-  return zig(zig(arbol));
+SplayTree* zigzig_spl(SplayTree* arbol) {
+  return zig_spl(zig_spl(arbol));
 }
 
-SplayTree* zagzag(SplayTree* arbol) {
-  return zag(zag(arbol));
+SplayTree* zagzag_spl(SplayTree* arbol) {
+  return zag_spl(zag_spl(arbol));
 }
 
-SplayTree* zigzag(SplayTree* arbol) {
-  zag(arbol->A);
-  return zig(arbol);
+SplayTree* zigzag_spl(SplayTree* arbol) {
+  zag_spl(arbol->A);
+  return zig_spl(arbol);
 }
 
-SplayTree* zagzig(SplayTree* arbol) {
-  zig(arbol->B);
-  return zag(arbol);
+SplayTree* zagzig_spl(SplayTree* arbol) {
+  zig_spl(arbol->B);
+  return zag_spl(arbol);
 }
 
-SplayTree* splay(SplayTree* arbol) {
+SplayTree* splay_spl(SplayTree* arbol) {
 
   // Asumimos que estamos en el arbol que queremos
   // llevar hasta la raiz
 
-  while (pad(pad(arbol))!=NULL) {
+  while (pad_spl(pad_spl(arbol))!=NULL) {
 
-    if (arbol->r < pad(pad(arbol))->r) { // a la izquierda del abuelo
-      if (arbol->r < pad(arbol)->r) { // a la izquierda de su padre
+    if (arbol->r < pad_spl(pad_spl(arbol))->r) { // a la izquierda del abuelo
+      if (arbol->r < pad_spl(arbol)->r) { // a la izquierda de su padre
         // arbol->A->A == arbol;
-        zigzig(pad(pad(arbol)));
+        zigzig_spl(pad_spl(pad_spl(arbol)));
       } else {
-        zigzag(pad(pad(arbol)));
+        zigzag_spl(pad_spl(pad_spl(arbol)));
       }
     } else {
-      if (arbol->r < pad(arbol)->r) {
-        zagzig(pad(pad(arbol)));
+      if (arbol->r < pad_spl(arbol)->r) {
+        zagzig_spl(pad_spl(pad_spl(arbol)));
       } else {
-        zagzag(pad(pad(arbol)));
+        zagzag_spl(pad_spl(pad_spl(arbol)));
       }
     }
   }
 
-  if (pad(arbol) == NULL) {
+  if (pad_spl(arbol) == NULL) {
     return arbol;
   }
-  if (pad(arbol->Padre) == NULL) {
-    if (pad(arbol)->A == arbol) {
-      return zig(arbol->Padre);
+  if (pad_spl(arbol->Padre) == NULL) {
+    if (pad_spl(arbol)->A == arbol) {
+      return zig_spl(arbol->Padre);
     } else {
-      return zag(arbol->Padre);
+      return zag_spl(arbol->Padre);
     }
   }
 
   return arbol;
 }
 
-SplayTree* search(SplayTree* arbol, int x) {
+SplayTree* search_spl(SplayTree* arbol, int x) {
   
   if (arbol == NULL) {
     perror("Busqueda en un arbol vacío\n");
@@ -148,8 +148,9 @@ SplayTree* search(SplayTree* arbol, int x) {
   SplayTree* current = arbol;
 
   for (;;) {
-
-    if (x < current->r) {
+    if (current->r == x) {
+      break;
+    } else if (x < current->r) {
       if (current->A == NULL) {
         break;
       }
@@ -162,10 +163,10 @@ SplayTree* search(SplayTree* arbol, int x) {
     }
   }
 
-  return splay(current);
+  return splay_spl(current);
 }
 
-SplayTree* insert(SplayTree* arbol, int x) {
+SplayTree* insert_spl(SplayTree* arbol, int x) {
   
   SplayTree* current;
 
@@ -204,30 +205,30 @@ SplayTree* insert(SplayTree* arbol, int x) {
     current->A->A = NULL;
     current->A->B = NULL;
     current->A->Padre = current;
-    return splay(current->A);
+    return splay_spl(current->A);
   } else {
     current->B = malloc(sizeof(SplayTree));
     current->B->r = x;
     current->B->A = NULL;
     current->B->B = NULL;
     current->B->Padre = current;
-    return splay(current->B);
+    return splay_spl(current->B);
   }
 
 }
 
-void delete(SplayTree* arbol) {
+void delete_spl(SplayTree* arbol) {
   if (arbol == NULL) {
     return;
   }
 
   if (arbol->A != NULL) {
-    delete(arbol->A);
+    delete_spl(arbol->A);
     arbol->A = NULL;
   }
   
   if (arbol->B != NULL) {
-    delete(arbol->B);
+    delete_spl(arbol->B);
     arbol->B = NULL;
   }
 

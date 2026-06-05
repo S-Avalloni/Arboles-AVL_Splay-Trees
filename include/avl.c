@@ -3,7 +3,7 @@
 #include "avl.h"
 
 
-int altura(Avl* arbol) {
+int altura_avl(Avl* arbol) {
   if (arbol == NULL) {
     return 0;
   }
@@ -11,16 +11,16 @@ int altura(Avl* arbol) {
   return arbol->altura;
 }
 
-int balance_factor(Avl* arbol) {
+int balance_factor_avl(Avl* arbol) {
   if (arbol == NULL) {
     return 0;
   }
 
-  return altura(arbol->A) - altura(arbol->B);
+  return altura_avl(arbol->A) - altura_avl(arbol->B);
 
 }
 
-Avl* zig(Avl* arbol) {
+Avl* zig_avl(Avl* arbol) {
   Avl* nueva_raiz = arbol->A;
   if (nueva_raiz == NULL) {
     perror("Lado izquierdo del arbol no puede ser nulo\n");
@@ -30,13 +30,13 @@ Avl* zig(Avl* arbol) {
   nueva_raiz->B = arbol;
   
   // Debemos recalcular altura de abajo hacia arriba
-  arbol->altura = 1 + max(altura(arbol->A), altura(arbol->B));
-  nueva_raiz->altura = 1 + max(altura(nueva_raiz->A),altura(nueva_raiz->B));
+  arbol->altura = 1 + max(altura_avl(arbol->A), altura_avl(arbol->B));
+  nueva_raiz->altura = 1 + max(altura_avl(nueva_raiz->A),altura_avl(nueva_raiz->B));
 
   return nueva_raiz;
 }
 
-Avl* zag(Avl* arbol) {
+Avl* zag_avl(Avl* arbol) {
   Avl* nueva_raiz = arbol->B;
   if (nueva_raiz == NULL) {
     perror("Lado derecho del arbol no puede ser nulo\n");
@@ -46,13 +46,13 @@ Avl* zag(Avl* arbol) {
   nueva_raiz->A = arbol;
   
   // Debemos recalcular altura de abajo hacia arriba
-  arbol->altura = 1 + max(altura(arbol->A), altura(arbol->B));
-  nueva_raiz->altura = 1 + max(altura(nueva_raiz->A),altura(nueva_raiz->B));
+  arbol->altura = 1 + max(altura_avl(arbol->A), altura_avl(arbol->B));
+  nueva_raiz->altura = 1 + max(altura_avl(nueva_raiz->A),altura_avl(nueva_raiz->B));
 
   return nueva_raiz;
 }
 
-Avl* search(Avl* arbol, int x) {
+Avl* search_avl(Avl* arbol, int x) {
   Avl* current = arbol;
 
   for(;;) {
@@ -69,7 +69,7 @@ Avl* search(Avl* arbol, int x) {
   return current;
 }
 
-Avl* insert(Avl* arbol, int x) {
+Avl* insert_avl(Avl* arbol, int x) {
   if (arbol == NULL) {
     
     arbol = malloc(sizeof(Avl));
@@ -80,31 +80,31 @@ Avl* insert(Avl* arbol, int x) {
     arbol->altura = 1;
     return arbol;
   } else if (arbol -> r > x) {
-    arbol->A = insert(arbol->A, x);
+    arbol->A = insert_avl(arbol->A, x);
   } else if (arbol -> r < x){
-    arbol->B = insert(arbol -> B, x);
+    arbol->B = insert_avl(arbol -> B, x);
   } else {
     perror("No se pueden insertar un elemento repetido\n");
     return arbol;
   }
 
 
-  int bf_root = balance_factor(arbol);
-  int bf_A    = balance_factor(arbol->A);
-  int bf_B    = balance_factor(arbol->B);
+  int bf_root = balance_factor_avl(arbol);
+  int bf_A    = balance_factor_avl(arbol->A);
+  int bf_B    = balance_factor_avl(arbol->B);
 
   if (bf_root == 2 && bf_A >= 0) {      // LL
-    arbol = zig(arbol);
+    arbol = zig_avl(arbol);
   } else if (bf_root == -2 && bf_B <= 0) { // RR
-    arbol = zag(arbol);
+    arbol = zag_avl(arbol);
   } else if (bf_root == 2 && bf_A < 0) {  // LR
-    arbol->A = zag(arbol->A);
-    arbol = zig(arbol);
+    arbol->A = zag_avl(arbol->A);
+    arbol = zig_avl(arbol);
   } else if (bf_root == -2 && bf_B > 0) { // RL
-    arbol->B = zag(arbol->B);
-    arbol = zig(arbol);
+    arbol->B = zag_avl(arbol->B);
+    arbol = zig_avl(arbol);
   } else {
-    arbol->altura = 1 + max(altura(arbol->A), altura(arbol->B));
+    arbol->altura = 1 + max(altura_avl(arbol->A), altura_avl(arbol->B));
   }
 
   if (arbol == NULL) {
@@ -113,18 +113,18 @@ Avl* insert(Avl* arbol, int x) {
   return arbol;
 }
 
-void delete(Avl* arbol) {
+void delete_avl(Avl* arbol) {
   if (arbol == NULL) {
     return;
   }
 
   if (arbol->A != NULL) {
-    delete(arbol->A);
+    delete_avl(arbol->A);
     arbol->A = NULL;
   }
   
   if (arbol->B != NULL) {
-    delete(arbol->B);
+    delete_avl(arbol->B);
     arbol->B = NULL;
   }
 

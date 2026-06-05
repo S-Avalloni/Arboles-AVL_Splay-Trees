@@ -14,30 +14,30 @@ typedef struct Nodo_Avl { // Sería lo que se define como r(A, B)
 // su altura.
 // Hace el chequeo de si es que el puntero es nulo y retorna
 // 0 o arbol->altura correspondientemente.
-int altura(Avl* arbol);
+int altura_avl(Avl* arbol);
 
 // arbol: puntero al arbol al que se le calcula su balance factor
 // 0 si el puntero es nulo, H(A)-H(B) para x(A, B) segun la
 // notación estandar 
-int balance_factor(Avl* arbol);
+int balance_factor_avl(Avl* arbol);
 
 // arbol: puntero a la raiz del arbol al que se le va a hacer
 // la operación zig (rotación a la derecha).
 // Se asume que en este arbol el lado izquierdo no es nulo.
 // Retorna NULL si es que es el caso y la nueva raiz sinó
-Avl* zig(Avl* arbol);
+Avl* zig_avl(Avl* arbol);
 
 // arbol: puntero a la raiz del arbol al que se le va a hacer
 // la operación zag (rotación a la izquierda).
 // Se asume que en este arbol el lado derecho no es nulo.
 // Retorna NULL si es que es el caso y la nueva raiz sinó
-Avl* zag(Avl* arbol);
+Avl* zag_avl(Avl* arbol);
 
 // arbol: El arbol donde se busca el elemento
 // x: El elemento a buscar
 // busca el elemento x en arbol y retorna un puntero a el,
 // si es que no se encuentra retorna NULL
-Avl* search(Avl* arbol, int x);
+Avl* search_avl(Avl* arbol, int x);
 
 // arbol: puntero al arbol donde se inserta el elemento
 // x: El elemento a instertar
@@ -46,7 +46,7 @@ Avl* search(Avl* arbol, int x);
 // recalcula las alturas de los subarboles tocados.
 // Retorna el puntero a la raiz, normalmente va a ser el mismo
 // valor pero es necesario en caso de que se modifique la raiz
-Avl* insert(Avl* arbol, int x);
+Avl* insert_avl(Avl* arbol, int x);
 
 
 
