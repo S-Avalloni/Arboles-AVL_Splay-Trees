@@ -1,4 +1,4 @@
-flags = -fsanitize=undefined,address,leak -fno-omit-frame-pointer -g -Wall -Wextra -std=c11
+flags = -fsanitize=undefined,leak -fno-omit-frame-pointer -g -Wall -Wextra -std=c11
 avl = build/avl.o
 splay = build/splay.o
 
@@ -11,10 +11,18 @@ build: main $(avl) $(splay)
 run-main: build/main
 	build/main
 
+run-const: build/const
+	build/const
+
 main: build/main
 
-build/main: src/main.c $(splay)
-	gcc $(flags) $(splay) src/main.c -o build/main
+const: build/const
+
+build/main: src/main.c $(splay) $(avl)
+	gcc $(flags) $(splay) $(avl) src/main.c -o build/main
+
+build/const: src/const.c $(splay)
+	gcc $(flags) $(splay) $(avl) src/const.c -o build/const
 
 $(avl): include/avl.h include/avl.c
 	gcc $(flags) -c include/avl.c -o build/avl.o

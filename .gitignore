@@ -1,5 +1,6 @@
 /*.pdf
 /*.zip
-/.vscode/
-/build/
+/.vscode/*
+/build/*
+/data/*
 !/*/.empty
