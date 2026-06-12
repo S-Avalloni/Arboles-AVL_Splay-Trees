@@ -4,17 +4,17 @@
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 
 typedef struct Nodo_Avl { // Sería lo que se define como r(A, B)
-  int r; // Dato del nodo
+  unsigned int r; // Dato del nodo
   struct Nodo_Avl* A; // Arbol izquierdo
   struct Nodo_Avl* B; // Arbol derecho
-  int altura;
+  unsigned int altura;
 } Avl;
 
 // arbol: puntero a la raiz del arbol al que se le consulta
 // su altura.
 // Hace el chequeo de si es que el puntero es nulo y retorna
 // 0 o arbol->altura correspondientemente.
-int altura_avl(Avl* arbol);
+unsigned int altura_avl(Avl* arbol);
 
 // arbol: puntero al arbol al que se le calcula su balance factor
 // 0 si el puntero es nulo, H(A)-H(B) para x(A, B) segun la
@@ -37,7 +37,7 @@ Avl* zag_avl(Avl* arbol);
 // x: El elemento a buscar
 // busca el elemento x en arbol y retorna un puntero a el,
 // si es que no se encuentra retorna NULL
-Avl* search_avl(Avl* arbol, int x);
+Avl* search_avl(Avl* arbol, unsigned int x);
 
 // arbol: puntero al arbol donde se inserta el elemento
 // x: El elemento a instertar
@@ -46,9 +46,9 @@ Avl* search_avl(Avl* arbol, int x);
 // recalcula las alturas de los subarboles tocados.
 // Retorna el puntero a la raiz, normalmente va a ser el mismo
 // valor pero es necesario en caso de que se modifique la raiz
-Avl* insert_avl(Avl* arbol, int x);
+Avl* insert_avl(Avl* arbol, unsigned int x);
 
-void preorder_avl(SplayTree* arbol);
+void preorder_avl(Avl* arbol);
 
 void delete_avl(Avl* arbol);
 

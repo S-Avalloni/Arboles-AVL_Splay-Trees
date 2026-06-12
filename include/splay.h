@@ -6,7 +6,7 @@
 // Un nodo del SplayTree según la recomendación del paper original
 // https://www.cs.cmu.edu/~sleator/papers/self-adjusting.pdf
 typedef struct Nodo_splay { // Sería lo que se define como r(A, B)
-  int r; // Dato del nodo
+  unsigned int r; // Dato del nodo
   struct Nodo_splay* A; // Arbol izquierdo
   struct Nodo_splay* B; // Arbol derecho
   struct Nodo_splay* Padre; // Puntero al padre
@@ -51,14 +51,14 @@ SplayTree* splay_spl(SplayTree* arbol);
 // x: El elemento a buscar
 // busca el elemento x en arbol y retorna un puntero a el,
 // si es que no se encuentra retorna NULL
-SplayTree* search_spl(SplayTree* arbol, int x);
+SplayTree* search_spl(SplayTree* arbol, unsigned int x);
 
 // arbol: puntero al arbol donde se inserta el elemento
 // x: El elemento a instertar
 // inserta el elemento x en el arbol, x no puede estar ya en
 // el arbol. Mantiene la invariante del balance factor y
 // recalcula las alturas de los subarboles tocados 
-SplayTree* insert_spl(SplayTree* arbol, int x);
+SplayTree* insert_spl(SplayTree* arbol, unsigned int x);
 
 void preorder_spl(SplayTree* arbol);
 

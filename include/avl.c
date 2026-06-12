@@ -3,7 +3,7 @@
 #include "avl.h"
 
 
-int altura_avl(Avl* arbol) {
+unsigned int altura_avl(Avl* arbol) {
   if (arbol == NULL) {
     return 0;
   }
@@ -16,7 +16,9 @@ int balance_factor_avl(Avl* arbol) {
     return 0;
   }
 
-  return altura_avl(arbol->A) - altura_avl(arbol->B);
+  // Puede ser bien desastrozo si es que alguno es muy grande
+  // y el casteo lo hace negativo pero hay que cruzar los dedos
+  return (int)altura_avl(arbol->A) - (int)altura_avl(arbol->B);
 
 }
 
@@ -53,7 +55,7 @@ Avl* zag_avl(Avl* arbol) {
   return nueva_raiz;
 }
 
-Avl* search_avl(Avl* arbol, int x) {
+Avl* search_avl(Avl* arbol, unsigned int x) {
   Avl* current = arbol;
 
   for(;;) {
@@ -70,7 +72,7 @@ Avl* search_avl(Avl* arbol, int x) {
   return current;
 }
 
-Avl* insert_avl(Avl* arbol, int x) {
+Avl* insert_avl(Avl* arbol, unsigned int x) {
   if (arbol == NULL) {
     
     arbol = malloc(sizeof(Avl));
@@ -116,12 +118,12 @@ Avl* insert_avl(Avl* arbol, int x) {
 
 void preorder_avl(Avl* arbol) {
   if (arbol->A != NULL) {
-    preorder(arbol->A);
+    preorder_avl(arbol->A);
   }
   printf("%d\n", arbol->r);
 
   if (arbol->B != NULL) {
-    preorder(arbol->B);
+    preorder_avl(arbol->B);
   } 
 
 }

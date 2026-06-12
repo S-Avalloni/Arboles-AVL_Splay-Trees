@@ -139,7 +139,7 @@ SplayTree* splay_spl(SplayTree* arbol) {
   return arbol;
 }
 
-SplayTree* search_spl(SplayTree* arbol, int x) {
+SplayTree* search_spl(SplayTree* arbol, unsigned int x) {
   
   if (arbol == NULL) {
     perror("Busqueda en un arbol vacío\n");
@@ -166,7 +166,7 @@ SplayTree* search_spl(SplayTree* arbol, int x) {
   return splay_spl(current);
 }
 
-SplayTree* insert_spl(SplayTree* arbol, int x) {
+SplayTree* insert_spl(SplayTree* arbol, unsigned int x) {
   
   SplayTree* current;
 
@@ -219,12 +219,12 @@ SplayTree* insert_spl(SplayTree* arbol, int x) {
 
 void preorder_spl(SplayTree* arbol) {
   if (arbol->A != NULL) {
-    preorder(arbol->A);
+    preorder_spl(arbol->A);
   }
   printf("%d\n", arbol->r);
 
   if (arbol->B != NULL) {
-    preorder(arbol->B);
+    preorder_spl(arbol->B);
   } 
 
 }
