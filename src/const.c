@@ -39,7 +39,7 @@ int main() {
     // No es necesario escribir de nuevo porque todos son mayores que
     // 2 a la 10
     fclose(archivo);
-    printf("%d bloques escritos\n", k, cont);
+    printf("%d bloques escritos\n", k);
 
   }
 
