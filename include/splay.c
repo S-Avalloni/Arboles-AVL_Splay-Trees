@@ -29,7 +29,9 @@ SplayTree* pad_spl(SplayTree* arbol) {
 
 SplayTree* zig_spl(SplayTree* arbol) {
   if (izq_spl(arbol) == NULL) {
+    #ifdef VERBOSO
     perror("No se puede hacer zig con nodo nulo o nodo izquierdo nulo\n");
+    #endif
     return arbol;
   }
   
@@ -57,7 +59,9 @@ SplayTree* zig_spl(SplayTree* arbol) {
 
 SplayTree* zag_spl(SplayTree* arbol) {
   if (der_spl(arbol) == NULL) {
+    #ifdef VERBOSO
     perror("No se puede hacer zag con nodo nulo o nodo derecho nulo\n");
+    #endif
     return arbol;
   }
   
@@ -142,7 +146,9 @@ SplayTree* splay_spl(SplayTree* arbol) {
 SplayTree* search_spl(SplayTree* arbol, unsigned int x) {
   
   if (arbol == NULL) {
+    #ifdef VERBOSO
     perror("Busqueda en un arbol vacío\n");
+    #endif
     return arbol;
   }
   SplayTree* current = arbol;
@@ -182,7 +188,9 @@ SplayTree* insert_spl(SplayTree* arbol, unsigned int x) {
   current = arbol;
   for (;;) {
     if (current->r == x) {
+      #ifdef VERBOSO
       perror("Elemento presente en el arbol\n");
+      #endif
       return arbol;
     }
 

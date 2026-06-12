@@ -25,7 +25,9 @@ int balance_factor_avl(Avl* arbol) {
 Avl* zig_avl(Avl* arbol) {
   Avl* nueva_raiz = arbol->A;
   if (nueva_raiz == NULL) {
+    #ifdef VERBOSO
     perror("zig: Lado izquierdo del arbol no puede ser nulo\n");
+    #endif
     return NULL;
   }
   arbol->A = (nueva_raiz)->B;
@@ -41,8 +43,9 @@ Avl* zig_avl(Avl* arbol) {
 Avl* zag_avl(Avl* arbol) {
   Avl* nueva_raiz = arbol->B;
   if (nueva_raiz == NULL) {
-    
+    #ifdef VERBOSO
     perror("zag: Lado derecho del arbol no puede ser nulo\n");
+    #endif
     return NULL;
   }
   arbol->B = (nueva_raiz)->A;
@@ -87,7 +90,9 @@ Avl* insert_avl(Avl* arbol, unsigned int x) {
   } else if (arbol -> r < x){
     arbol->B = insert_avl(arbol -> B, x);
   } else {
+    #ifdef VERBOSO
     perror("No se pueden insertar un elemento repetido\n");
+    #endif
     return arbol;
   }
 
@@ -111,7 +116,9 @@ Avl* insert_avl(Avl* arbol, unsigned int x) {
   arbol->altura = 1 + max(altura_avl(arbol->A), altura_avl(arbol->B));
 
   if (arbol == NULL) {
+    #ifdef VERBOSO
     perror("Hubo un error y no se insertó bien el elemento\n");
+    #endif
   }
   return arbol;
 }
