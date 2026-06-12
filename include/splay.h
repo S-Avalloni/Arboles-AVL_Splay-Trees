@@ -1,5 +1,5 @@
-#ifndef SPLAY
-#define SPLAY
+#ifndef SPLAY_H
+#define SPLAY_H
 
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 
@@ -60,6 +60,7 @@ SplayTree* search_spl(SplayTree* arbol, int x);
 // recalcula las alturas de los subarboles tocados 
 SplayTree* insert_spl(SplayTree* arbol, int x);
 
+void preorder_spl(SplayTree* arbol);
 
 void delete_spl(SplayTree* arbol);
 

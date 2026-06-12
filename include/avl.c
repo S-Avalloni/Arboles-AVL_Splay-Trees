@@ -114,6 +114,18 @@ Avl* insert_avl(Avl* arbol, int x) {
   return arbol;
 }
 
+void preorder_avl(Avl* arbol) {
+  if (arbol->A != NULL) {
+    preorder(arbol->A);
+  }
+  printf("%d\n", arbol->r);
+
+  if (arbol->B != NULL) {
+    preorder(arbol->B);
+  } 
+
+}
+
 void delete_avl(Avl* arbol) {
   if (arbol == NULL) {
     return;

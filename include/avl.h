@@ -1,5 +1,5 @@
-#ifndef AVL
-#define AVL
+#ifndef AVL_H
+#define AVL_H
 
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 
@@ -48,6 +48,7 @@ Avl* search_avl(Avl* arbol, int x);
 // valor pero es necesario en caso de que se modifique la raiz
 Avl* insert_avl(Avl* arbol, int x);
 
+void preorder_avl(SplayTree* arbol);
 
 void delete_avl(Avl* arbol);
 

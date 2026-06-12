@@ -217,6 +217,18 @@ SplayTree* insert_spl(SplayTree* arbol, int x) {
 
 }
 
+void preorder_spl(SplayTree* arbol) {
+  if (arbol->A != NULL) {
+    preorder(arbol->A);
+  }
+  printf("%d\n", arbol->r);
+
+  if (arbol->B != NULL) {
+    preorder(arbol->B);
+  } 
+
+}
+
 void delete_spl(SplayTree* arbol) {
   if (arbol == NULL) {
     return;
