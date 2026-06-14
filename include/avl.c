@@ -127,7 +127,7 @@ void preorder_avl(Avl* arbol) {
   if (arbol->A != NULL) {
     preorder_avl(arbol->A);
   }
-  printf("%d\n", arbol->r);
+  printf("%u\n", arbol->r);
 
   if (arbol->B != NULL) {
     preorder_avl(arbol->B);

@@ -229,7 +229,7 @@ void preorder_spl(SplayTree* arbol) {
   if (arbol->A != NULL) {
     preorder_spl(arbol->A);
   }
-  printf("%d\n", arbol->r);
+  printf("%u\n", arbol->r);
 
   if (arbol->B != NULL) {
     preorder_spl(arbol->B);
