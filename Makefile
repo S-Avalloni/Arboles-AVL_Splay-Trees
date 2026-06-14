@@ -1,7 +1,6 @@
-flags = -fsanitize=undefined,address -fno-omit-frame-pointer -g -Wall -Wextra -std=c11
+flags = -fsanitize=undefined,address -fno-omit-frame-pointer -Wall -Wextra -std=c11 -O3
 avl = build/avl.o
 splay = build/splay.o
-trees = build/trees.o
 
 say:
 	cat Makefile

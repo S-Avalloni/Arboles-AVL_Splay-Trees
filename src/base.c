@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include "../include/trees.h"
 
@@ -53,7 +56,7 @@ int unif(unsigned int N) {
   return resultado;
 }
 
-// archivo: archivo abierto desde el que se leen 2^p elementos
+// archivo: archivo abierto desde el que se leen N elementos
 // el archivo debe tener por lo menos ese tamaño
 int test(FILE *archivo, unsigned int N, Generador generador, enum Tipo_Lista tipo_lista) {
   
@@ -63,6 +66,7 @@ int test(FILE *archivo, unsigned int N, Generador generador, enum Tipo_Lista tip
     return 1;
   }
 
+  
   printf("Se hace el malloc\n");
 
   unsigned int resultado = fread(elementos, sizeof(unsigned int), N, archivo);
@@ -91,27 +95,41 @@ int test(FILE *archivo, unsigned int N, Generador generador, enum Tipo_Lista tip
 
   printf("Inserción\n");
 
-  Avl* cabeza_avl = NULL;
+  pid_t pid = fork();
 
-  start = clock();
-  for (unsigned int i = 0; i < N; i++) {
-    cabeza_avl = insert(cabeza_avl, elementos[generador(N)]);
+  if (pid == 0) {
+
+    Avl* cabeza_avl = NULL;
+  
+    start = clock();
+    for (unsigned int i = 0; i < N; i++) {
+      cabeza_avl = insert(cabeza_avl, elementos[generador(N)]);
+    }
+    end = clock();
+  
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("%f segundos Avl\n", cpu_time_used);
+    
+    delete(cabeza_avl);
+    free(elementos);
+    exit(0);
+  } else {
+
+    SplayTree* cabeza_spl = NULL;
+    start = clock();
+    for (unsigned int i = 0; i < N; i++) {
+      cabeza_spl = insert(cabeza_spl, elementos[generador(N)]);
+    }
+    end = clock();
+  
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("%f segundos SplayTree\n", cpu_time_used);
+    
+    delete(cabeza_spl);
+    free(elementos);
+    waitpid(pid, NULL, 0);
   }
-  end = clock();
-
-  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-  printf("%f segundos Avl\n", cpu_time_used);
-
-  SplayTree* cabeza_spl = NULL;
-
-  start = clock();
-  for (unsigned int i = 0; i < N; i++) {
-    cabeza_spl = insert(cabeza_spl, elementos[generador(N)]);
-  }
-  end = clock();
-
-  cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-  printf("%f segundos SplayTree\n", cpu_time_used);
+  
 
   /*
   printf("\nBusqueda\n");
@@ -126,9 +144,6 @@ int test(FILE *archivo, unsigned int N, Generador generador, enum Tipo_Lista tip
   printf("%f segundos Avl\n", cpu_time_used);
   */
   
-  free(elementos);
-  delete(cabeza_avl);
-  delete(cabeza_spl);
 
   return 0;
 }
