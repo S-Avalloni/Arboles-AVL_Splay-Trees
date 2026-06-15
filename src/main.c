@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include "../include/trees.h"
 
-
+#define BLUE(string) "\x1b[34m" string "\x1b[0m"
+#define GREEN(string) "\x1b[32m" string "\x1b[0m"
+#define RED(string) "\x1b[31m" string "\x1b[0m"
 
 
 int main() {
@@ -16,7 +18,7 @@ int main() {
   cabeza = insert(cabeza, 7);
   void *resultado = search(cabeza, 5);
 
-  printf("cabeza: %p\nresultado: %p\n", cabeza, resultado);
+  printf(BLUE("cabeza: %p") "\n" GREEN("resultado: %p") "\n", cabeza, resultado);
 
   delete(cabeza);
   cabeza = NULL;
