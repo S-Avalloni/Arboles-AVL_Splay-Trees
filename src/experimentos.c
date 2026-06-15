@@ -22,7 +22,7 @@ int compare_asc(const void *a, const void *b) {
 }
 
 
-int main() {
+int seq_access() {
 
 
   FILE *archivo = fopen("./data/dataset_25", "rb");
@@ -62,57 +62,63 @@ int main() {
 
   qsort(busqueda, N, sizeof(unsigned int), compare_asc);
 
-  /* pid_t pid = fork();
+  pid_t pid = fork();
 
   if (pid == 0) {
     clock_t start_avl, end_avl;
+    double cpu_time_used_avl=0;
+
     for (int i = 0; i<N; i++) {
       sat_avl = insert(sat_avl, elementos[i]);
     }
+
+    for (int m = 0; m < N/10; m+= N/100) {
+      start_avl = clock();
+      for (int j = 0; j<N/100; j++) {
+        search(sat_avl, busqueda[j+m]);
+      }
+      end_avl = clock();
+      cpu_time_used_avl += ((double) (end_avl - start_avl)) / CLOCKS_PER_SEC;
+      printf("%f segundos avl m: %d\n", cpu_time_used_avl, m);
+    }
   } else {
     clock_t start_spl, end_spl;
+    double cpu_time_used_spl=0;
+
     for (int i = 0; i<N; i++) {
       sat_spl = insert(sat_spl, elementos[i]);
     }
-  } */
 
-  for (int i = 0; i<N; i++) {
-    sat_avl = insert(sat_avl, elementos[i]);
-    sat_spl = insert(sat_spl, elementos[i]);
+    for (int m = 0; m < N/10; m+= N/100) {
+      start_spl = clock();
+      for (int j = 0; j<N/100; j++) {
+        sat_spl = search(sat_spl, busqueda[j+m]);
+      }
+      end_spl = clock();
+
+      cpu_time_used_spl += ((double) (end_spl - start_spl)) / CLOCKS_PER_SEC;
+      printf("%f segundos spl m: %d\n", cpu_time_used_spl, m);
+    }
   }
 
-  clock_t start_spl, end_spl, start_avl, end_avl;
-
-  double cpu_time_used_spl=0, cpu_time_used_avl=0;
-  
-  for (int m = 0; m < N/10; m += N/100) {
-
-    printf("m: %d\n", m);
-
-
-    start_spl = clock();
-    for (int j = 0; j<N/100; j++) {
-      sat_spl = search(sat_spl, busqueda[j+m]);
-    }
-    end_spl = clock();
-
-
-    start_avl = clock();
-    for (int j = 0; j<N/100; j++) {
-      search(sat_avl, busqueda[j+m]);
-    }
-    end_avl = clock();
-
-    cpu_time_used_spl += ((double) (end_spl - start_spl)) / CLOCKS_PER_SEC;
-    printf("%f segundos spl\n", cpu_time_used_spl);
-    
-    cpu_time_used_avl += ((double) (end_avl - start_avl)) / CLOCKS_PER_SEC;
-    printf("%f segundos avl\n", cpu_time_used_avl);
-  }
   
   delete(sat_avl);
   delete(sat_spl);
   delete(wst_avl);
   delete(wst_spl);
 
+  free(elementos);
+  free(busqueda);
+
+  if (pid == 0) {
+    exit(0);
+  } else {
+    waitpid(pid, NULL, 0);
+  }
+
+  return 0;
+}
+
+int main() {
+  return 0;
 }
