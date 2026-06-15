@@ -2,6 +2,18 @@
 #include <stdio.h>
 #include "splay.h"
 
+SplayTreeContext* init_ctx_spl(unsigned int size) {
+  SplayTreeContext* ctx = malloc(sizeof(SplayTreeContext));
+  ctx->pool = malloc(sizeof(SplayTree) * size);
+  ctx->idx = 0;
+  ctx->capacity = size;
+  return ctx;
+}
+
+static SplayTree* alloc_spl(SplayTreeContext* ctx) {
+  return &ctx->pool[ctx->idx++];
+}
+
 SplayTree* izq_spl(SplayTree* arbol) {
   if (arbol == NULL || arbol->A == NULL) {
     return NULL;
@@ -172,12 +184,12 @@ SplayTree* search_spl(SplayTree* arbol, unsigned int x) {
   return splay_spl(current);
 }
 
-SplayTree* insert_spl(SplayTree* arbol, unsigned int x) {
+SplayTree* insert_spl(SplayTreeContext* ctx, SplayTree* arbol, unsigned int x) {
   
   SplayTree* current;
 
   if (arbol == NULL) {
-    current = malloc(sizeof(SplayTree));
+    current = alloc_spl(ctx);
     current->r = x;
     current->A = NULL;
     current->B = NULL;
@@ -208,14 +220,14 @@ SplayTree* insert_spl(SplayTree* arbol, unsigned int x) {
   }
 
   if (x < current->r) {
-    current->A = malloc(sizeof(SplayTree));
+    current->A = alloc_spl(ctx);
     current->A->r = x;
     current->A->A = NULL;
     current->A->B = NULL;
     current->A->Padre = current;
     return splay_spl(current->A);
   } else {
-    current->B = malloc(sizeof(SplayTree));
+    current->B = alloc_spl(ctx);
     current->B->r = x;
     current->B->A = NULL;
     current->B->B = NULL;
@@ -237,22 +249,11 @@ void preorder_spl(SplayTree* arbol) {
 
 }
 
-void delete_spl(SplayTree* arbol) {
-  if (arbol == NULL) {
-    return;
-  }
-
-  if (arbol->A != NULL) {
-    delete_spl(arbol->A);
-    arbol->A = NULL;
-  }
-  
-  if (arbol->B != NULL) {
-    delete_spl(arbol->B);
-    arbol->B = NULL;
-  }
-
-  free(arbol);
+void delete_spl(SplayTreeContext* ctx) {
+  free(ctx->pool);
+  ctx->pool = NULL;
+  ctx->idx = 0;
+  free(ctx);
   return;
 }
 

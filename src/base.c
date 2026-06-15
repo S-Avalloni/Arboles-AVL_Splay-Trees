@@ -127,6 +127,10 @@ int test(FILE *archivo, unsigned int N, enum Tipo_Lista tipo_lista, Generador ge
   pid_t pid = fork();
 
   if (pid != 0) { // Padre
+
+    AvlContext* ctx_avl = init_ctx_avl(N);
+
+
     #ifdef VERBOSO
     printf(BLUE("Inserción") "\n");
     #endif
@@ -135,7 +139,7 @@ int test(FILE *archivo, unsigned int N, enum Tipo_Lista tipo_lista, Generador ge
 
     start = clock();
     for (i = 0; i < N; i++) {
-      cabeza_avl = insert(cabeza_avl, elementos[vista_elementos(*j)]);
+      cabeza_avl = insert(ctx_avl, cabeza_avl, elementos[vista_elementos(*j)]);
     }
     end = clock();
 
@@ -155,14 +159,15 @@ int test(FILE *archivo, unsigned int N, enum Tipo_Lista tipo_lista, Generador ge
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf(GREEN("%f segundos Avl") "\n", cpu_time_used);
 
-    delete(cabeza_avl);
+    delete(ctx_avl);
   } else { // Hijo
 
+    SplayTreeContext* ctx_spl = init_ctx_spl(N);
     SplayTree* cabeza_spl = NULL;
 
     start = clock();
     for (i = 0; i < N; i++) {
-      cabeza_spl = insert(cabeza_spl, elementos[vista_elementos(*j)]);
+      cabeza_spl = insert(ctx_spl, cabeza_spl, elementos[vista_elementos(*j)]);
     }
     end = clock();
 
@@ -178,6 +183,8 @@ int test(FILE *archivo, unsigned int N, enum Tipo_Lista tipo_lista, Generador ge
 
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf(GREEN("%f segundos Splay") "\n", cpu_time_used);
+
+    delete(ctx_spl);
   }
   
   

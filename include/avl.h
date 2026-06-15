@@ -10,6 +10,14 @@ typedef struct Nodo_Avl { // Sería lo que se define como r(A, B)
   unsigned int altura;
 } Avl;
 
+typedef struct Memoria_avl {
+  Avl* pool;
+  int idx;
+  int capacity;
+} AvlContext;
+
+AvlContext* init_ctx_avl(unsigned int size);
+
 // arbol: puntero a la raiz del arbol al que se le consulta
 // su altura.
 // Hace el chequeo de si es que el puntero es nulo y retorna
@@ -46,10 +54,10 @@ Avl* search_avl(Avl* arbol, unsigned int x);
 // recalcula las alturas de los subarboles tocados.
 // Retorna el puntero a la raiz, normalmente va a ser el mismo
 // valor pero es necesario en caso de que se modifique la raiz
-Avl* insert_avl(Avl* arbol, unsigned int x);
+Avl* insert_avl(AvlContext* ctx, Avl* arbol, unsigned int x);
 
-void preorder_avl(Avl* arbol);
+void inorder_avl(Avl* arbol);
 
-void delete_avl(Avl* arbol);
+void delete_avl(AvlContext* ctx);
 
 #endif

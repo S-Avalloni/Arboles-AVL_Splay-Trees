@@ -2,6 +2,17 @@
 #include <stdio.h>
 #include "avl.h"
 
+AvlContext* init_ctx_avl(unsigned int size) {
+  AvlContext* ctx = malloc(sizeof(AvlContext));
+  ctx->pool = malloc(sizeof(Avl) * size);
+  ctx->idx = 0;
+  ctx->capacity = size;
+  return ctx;
+}
+
+static Avl* alloc_avl(AvlContext* ctx) {
+  return &ctx->pool[ctx->idx++];
+}
 
 unsigned int altura_avl(Avl* arbol) {
   if (arbol == NULL) {
@@ -75,10 +86,10 @@ Avl* search_avl(Avl* arbol, unsigned int x) {
   return current;
 }
 
-Avl* insert_avl(Avl* arbol, unsigned int x) {
+Avl* insert_avl(AvlContext* ctx, Avl* arbol, unsigned int x) {
   if (arbol == NULL) {
     
-    arbol = malloc(sizeof(Avl));
+    arbol = alloc_avl(ctx);
 
     arbol->r = x;
     arbol->A = NULL;
@@ -86,9 +97,9 @@ Avl* insert_avl(Avl* arbol, unsigned int x) {
     arbol->altura = 1;
     return arbol;
   } else if (arbol -> r > x) {
-    arbol->A = insert_avl(arbol->A, x);
+    arbol->A = insert_avl(ctx, arbol->A, x);
   } else if (arbol -> r < x){
-    arbol->B = insert_avl(arbol -> B, x);
+    arbol->B = insert_avl(ctx, arbol -> B, x);
   } else {
     #ifdef VERBOSO
     perror("No se pueden insertar un elemento repetido\n");
@@ -112,44 +123,37 @@ Avl* insert_avl(Avl* arbol, unsigned int x) {
     arbol->B = zig_avl(arbol->B);
     arbol = zag_avl(arbol);
   }
+  
+  if (arbol == NULL) {
+    #ifdef VERBOSO
+    perror("Hubo un error al hacer zig o zag al insertar el valor");
+    #endif
+    return arbol;
+  }
+
 
   arbol->altura = 1 + max(altura_avl(arbol->A), altura_avl(arbol->B));
 
-  if (arbol == NULL) {
-    #ifdef VERBOSO
-    perror("Hubo un error y no se insertó bien el elemento\n");
-    #endif
-  }
+
   return arbol;
 }
 
-void preorder_avl(Avl* arbol) {
+void inorder_avl(Avl* arbol) {
   if (arbol->A != NULL) {
-    preorder_avl(arbol->A);
+    inorder_avl(arbol->A);
   }
   printf("%u\n", arbol->r);
 
   if (arbol->B != NULL) {
-    preorder_avl(arbol->B);
+    inorder_avl(arbol->B);
   } 
 
 }
 
-void delete_avl(Avl* arbol) {
-  if (arbol == NULL) {
-    return;
-  }
-
-  if (arbol->A != NULL) {
-    delete_avl(arbol->A);
-    arbol->A = NULL;
-  }
-  
-  if (arbol->B != NULL) {
-    delete_avl(arbol->B);
-    arbol->B = NULL;
-  }
-
-  free(arbol);
+void delete_avl(AvlContext* ctx) {
+  free(ctx->pool);
+  ctx->pool = NULL;
+  ctx->idx = 0;
+  free(ctx);
   return;
 }

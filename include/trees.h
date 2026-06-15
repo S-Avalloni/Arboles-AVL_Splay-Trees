@@ -45,24 +45,19 @@ es necesario hacerlas genéricas
 
 // inserta el elemento i al arbol y retorna un puntero a la
 // cabeza de este
-#define insert(arbol, i) _Generic((arbol), \
+#define insert(ctx, arbol, i) _Generic((arbol), \
   Avl*: insert_avl, \
   SplayTree*: insert_spl \
-)(arbol, i)
+)(ctx, arbol, i)
 
-#define preorder(arbol) _Generic((arbol), \
-  Avl*: preorder_avl, \
-  SplayTree*: preorder_spl \
+#define inorder(arbol) _Generic((arbol), \
+  Avl*: inorder_avl, \
+  SplayTree*: inorder_spl \
 )(arbol)
 
-#define delete(arbol) _Generic((arbol), \
-  Avl*: delete_avl, \
-  SplayTree*: delete_spl \
-)(arbol)
-
-typedef enum {
-  SPLAY,
-  AVL
-} Tree_Type;
+#define delete(ctx) _Generic((ctx), \
+  AvlContext*: delete_avl, \
+  SplayTreeContext*: delete_spl \
+)(ctx)
 
 #endif

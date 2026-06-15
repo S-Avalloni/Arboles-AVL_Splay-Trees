@@ -12,6 +12,16 @@ typedef struct Nodo_splay { // Sería lo que se define como r(A, B)
   struct Nodo_splay* Padre; // Puntero al padre
 } SplayTree;
 
+typedef struct Memoria_splay {
+  SplayTree* pool;
+  int idx;
+  int capacity;
+} SplayTreeContext;
+
+
+
+SplayTreeContext* init_ctx_spl(unsigned int size);
+
 // arbol: Puntero al arbol al que se le consulta su izq, función
 // se define para no tener que chequear si es que arbol es nulo
 // cada vez. izq(NULL) == NULL
@@ -58,10 +68,10 @@ SplayTree* search_spl(SplayTree* arbol, unsigned int x);
 // inserta el elemento x en el arbol, x no puede estar ya en
 // el arbol. Mantiene la invariante del balance factor y
 // recalcula las alturas de los subarboles tocados 
-SplayTree* insert_spl(SplayTree* arbol, unsigned int x);
+SplayTree* insert_spl(SplayTreeContext* ctx, SplayTree* arbol, unsigned int x);
 
-void preorder_spl(SplayTree* arbol);
+void inorder_spl(SplayTree* arbol);
 
-void delete_spl(SplayTree* arbol);
+void delete_spl(SplayTreeContext* ctx);
 
 #endif
