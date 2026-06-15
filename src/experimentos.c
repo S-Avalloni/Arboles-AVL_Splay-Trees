@@ -1,14 +1,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
-int dataset(int i) {
+#include "../include/trees.h"
+
+#define c 5
+
+#define N 0b10000000000000000000000000
+
+#define BLUE(string) "\x1b[34m" string "\x1b[0m"
+#define GREEN(string) "\x1b[32m" string "\x1b[0m"
+#define RED(string) "\x1b[31m" string "\x1b[0m"
+
+int dataset() {
   
   srand(time(NULL));
-  char title[20];
 
   unsigned int *block = malloc(sizeof(int)*1024); // para escribir de a 4096 bytes
-  snprintf(title, 20, "./data/dataset_%d", i);
+  char title[] = "./data/dataset_25";
   FILE *archivo = fopen(title, "w+");
   
   if (archivo == NULL) {
@@ -20,8 +32,8 @@ int dataset(int i) {
   int cont = 0;
   
   printf("Escribiendo archivo %s\n", title);
-
-  for (int j = 0; j<(1<<i); j++) {
+  
+  for (int j = 0; j<N; j++) {
 
     block[cont] = (unsigned int)((unsigned int)rand()<<1) | (rand()&1);
     ++cont;
@@ -43,15 +55,5 @@ int dataset(int i) {
 }
 
 int main() {
-
-  
-  for (int i = 10; i<= 14; i++) {
-    
-    dataset(i);
-
-  }
-
-  dataset(25);
-
-  return 0;
+  return dataset();
 }
