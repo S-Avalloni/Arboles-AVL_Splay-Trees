@@ -1,4 +1,4 @@
-flags = -fsanitize=undefined,address -fno-omit-frame-pointer -Wall -Wextra -std=c11 -O3
+flags = -fsanitize=undefined,address -g -fno-omit-frame-pointer -Wall -Wextra -std=c11 -O3
 avl = build/avl.o
 splay = build/splay.o
 
