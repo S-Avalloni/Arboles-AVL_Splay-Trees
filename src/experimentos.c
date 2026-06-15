@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -11,49 +12,107 @@
 
 #define N 0b10000000000000000000000000
 
-#define BLUE(string) "\x1b[34m" string "\x1b[0m"
-#define GREEN(string) "\x1b[32m" string "\x1b[0m"
-#define RED(string) "\x1b[31m" string "\x1b[0m"
-
-int dataset() {
-  
-  srand(time(NULL));
-
-  unsigned int *block = malloc(sizeof(int)*1024); // para escribir de a 4096 bytes
-  char title[] = "./data/dataset_25";
-  FILE *archivo = fopen(title, "w+");
-  
-  if (archivo == NULL) {
-    perror("algo pasó\n");
-    return 1;
-  }
-  
-  int k = 0;
-  int cont = 0;
-  
-  printf("Escribiendo archivo %s\n", title);
-  
-  for (int j = 0; j<N; j++) {
-
-    block[cont] = (unsigned int)((unsigned int)rand()<<1) | (rand()&1);
-    ++cont;
-    if (cont == 1024) {
-      k++;
-      fwrite(block, sizeof(int), cont, archivo);
-      cont = 0;
-    }
-  }
-  
-  fclose(archivo);
-  printf("%d bloques escritos\n", k);
-
-
-  free(block);
-  block = NULL;
-
-  return 0;
+int compare_asc(const void *a, const void *b) {
+    unsigned int val_a = *(const unsigned int *)a;
+    unsigned int val_b = *(const unsigned int *)b;
+    
+    if (val_a < val_b) return -1;
+    if (val_a > val_b) return 1;
+    return 0;
 }
 
+
 int main() {
-  return dataset();
+
+
+  FILE *archivo = fopen("./data/dataset_25", "rb");
+  if (archivo == NULL) {
+    perror("No se pudo abrir el dataset\n");
+    return 1;
+  }
+
+  Avl *sat_avl = NULL, *wst_avl = NULL;
+  SplayTree *sat_spl = NULL, *wst_spl = NULL;
+
+  unsigned int *elementos = malloc(sizeof(unsigned int)*N);
+  unsigned int *busqueda = malloc(sizeof(unsigned int)*N);
+  
+  if (elementos == NULL) {
+    perror("Error en la creación de la lista en ram\n");
+    return 1;
+  }
+
+  if (busqueda == NULL) {
+    perror("Error en la creación de la copia\n");
+    free(elementos);
+    return 1;
+  }
+
+  
+  unsigned int resultado = fread(elementos, sizeof(unsigned int), N, archivo);
+
+  if (resultado != N) {
+    perror("Lectura de los elementos tuvo un error\n");
+    free(busqueda);
+    free(elementos);
+    return 1;
+  }
+
+  memcpy(busqueda, elementos, sizeof(unsigned int)*N);
+
+  qsort(busqueda, N, sizeof(unsigned int), compare_asc);
+
+  /* pid_t pid = fork();
+
+  if (pid == 0) {
+    clock_t start_avl, end_avl;
+    for (int i = 0; i<N; i++) {
+      sat_avl = insert(sat_avl, elementos[i]);
+    }
+  } else {
+    clock_t start_spl, end_spl;
+    for (int i = 0; i<N; i++) {
+      sat_spl = insert(sat_spl, elementos[i]);
+    }
+  } */
+
+  for (int i = 0; i<N; i++) {
+    sat_avl = insert(sat_avl, elementos[i]);
+    sat_spl = insert(sat_spl, elementos[i]);
+  }
+
+  clock_t start_spl, end_spl, start_avl, end_avl;
+
+  double cpu_time_used_spl=0, cpu_time_used_avl=0;
+  
+  for (int m = 0; m < N/10; m += N/100) {
+
+    printf("m: %d\n", m);
+
+
+    start_spl = clock();
+    for (int j = 0; j<N/100; j++) {
+      sat_spl = search(sat_spl, busqueda[j+m]);
+    }
+    end_spl = clock();
+
+
+    start_avl = clock();
+    for (int j = 0; j<N/100; j++) {
+      search(sat_avl, busqueda[j+m]);
+    }
+    end_avl = clock();
+
+    cpu_time_used_spl += ((double) (end_spl - start_spl)) / CLOCKS_PER_SEC;
+    printf("%f segundos spl\n", cpu_time_used_spl);
+    
+    cpu_time_used_avl += ((double) (end_avl - start_avl)) / CLOCKS_PER_SEC;
+    printf("%f segundos avl\n", cpu_time_used_avl);
+  }
+  
+  delete(sat_avl);
+  delete(sat_spl);
+  delete(wst_avl);
+  delete(wst_spl);
+
 }
