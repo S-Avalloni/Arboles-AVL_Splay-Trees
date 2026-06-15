@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "splay.h"
 
 SplayTreeContext* init_ctx_spl(unsigned int size) {
@@ -235,6 +236,30 @@ SplayTree* insert_spl(SplayTreeContext* ctx, SplayTree* arbol, unsigned int x) {
     return splay_spl(current->B);
   }
 
+}
+
+int copy_spl(SplayTreeContext* out, SplayTreeContext* ctx, SplayTree** nueva_raiz, SplayTree* raiz_original) {
+  
+  if (out->capacity < ctx->capacity) {
+    perror("Capacidad de salida menor que la de entrada\n");
+    return 1;
+  }
+  
+  memcpy(out->pool, ctx->pool, sizeof(SplayTree) * ctx->idx);
+
+  out->idx = ctx->idx;
+
+  int offset = out->pool - ctx->pool;
+  for (int i = 0; i < out->idx; i++) {
+    SplayTree* nodo = &out->pool[i];
+    if (nodo->A      != NULL) nodo->A      += offset;
+    if (nodo->B      != NULL) nodo->B      += offset;
+    if (nodo->Padre  != NULL) nodo->Padre  += offset;
+  }
+
+  *nueva_raiz = raiz_original + offset;
+
+  return 0;
 }
 
 void preorder_spl(SplayTree* arbol) {

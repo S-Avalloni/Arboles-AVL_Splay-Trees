@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "avl.h"
 
 AvlContext* init_ctx_avl(unsigned int size) {
@@ -136,6 +137,28 @@ Avl* insert_avl(AvlContext* ctx, Avl* arbol, unsigned int x) {
 
 
   return arbol;
+}
+
+int copy_avl(AvlContext* out, AvlContext* ctx, Avl** nueva_raiz, Avl* raiz_original) {
+  if (out->capacity < ctx->capacity) {
+    perror("Capacidad de salida menor que la de entrada\n");
+    return 1;
+  }
+
+  memcpy(out->pool, ctx->pool, sizeof(Avl) * ctx->idx);
+
+  out->idx = ctx->idx;
+
+  int offset = out->pool - ctx->pool;
+  for (int i = 0; i < out->idx; i++) {
+    Avl* nodo = &out->pool[i];
+    if (nodo->A      != NULL) nodo->A      += offset;
+    if (nodo->B      != NULL) nodo->B      += offset;
+  }
+
+  *nueva_raiz = raiz_original + offset;
+
+  return 0;
 }
 
 void inorder_avl(Avl* arbol) {

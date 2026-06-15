@@ -9,70 +9,10 @@
 
 #define c 5
 
-#define BLUE(string) "\x1b[34m" string "\x1b[0m"
-#define GREEN(string) "\x1b[32m" string "\x1b[0m"
-#define RED(string) "\x1b[31m" string "\x1b[0m"
-
-typedef int (*Generador)(unsigned int N);
-
 enum Tipo_Lista {
   ORDENADO,
   NO_ORDENADO
 };
-
-int compare_asc(const void *a, const void *b) {
-    unsigned int val_a = *(const unsigned int *)a;
-    unsigned int val_b = *(const unsigned int *)b;
-    
-    if (val_a < val_b) return -1;
-    if (val_a > val_b) return 1;
-    return 0;
-}
-
-// Se va a tomar lambda = log(31/32) ~ 0.014 ya que así
-// se facilita el calculo de la probabilidad y el sampleo
-// de los datos.
-// Esto implica que exp(-lambda) = 31/32
-
-
-// La distribución que nos dan es una geometrica de
-// parametro 1-exp(-lambda) = 1/32
-int geom(unsigned int N) {
-  unsigned int conteo;
-  do {
-    conteo = 0;
-    // bernoulli(1/32) hasta que haya un acierto
-    while ((rand()&0b11111) != 0b11111) {
-      conteo++;
-    }
-    
-  } while (conteo>=N); // Se resamplea si es que se pasa de N
-
-  return conteo;
-
-}
-
-// Solo funciona si es que N es menor a 2^32 ya que rand da resultados con el
-// primer bit en 0
-int unif(unsigned int N) {
-  unsigned int resultado;
-
-  unsigned int mask = N - 1;
-  mask |= mask >> 1;
-  mask |= mask >> 2;
-  mask |= mask >> 4;
-  mask |= mask >> 8;
-  mask |= mask >> 16;
-
-  do {
-    resultado =   rand()&mask;
-  } while (resultado>=N);
-  return resultado;
-}
-
-int seq(unsigned int N) {
-  return N;
-}
 
 // archivo: archivo abierto desde el que se leen N elementos
 // el archivo debe tener por lo menos ese tamaño

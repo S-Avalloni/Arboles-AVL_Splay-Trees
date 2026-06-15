@@ -4,6 +4,10 @@
 #include "./avl.h"
 #include "./splay.h"
 
+#define BLUE(string) "\x1b[34m" string "\x1b[0m"
+#define GREEN(string) "\x1b[32m" string "\x1b[0m"
+#define RED(string) "\x1b[31m" string "\x1b[0m"
+
 #define zig(arbol) _Generic((arbol), \
   Avl*: zig_avl, \
   SplayTree*: zig_spl \
@@ -45,10 +49,15 @@ es necesario hacerlas genéricas
 
 // inserta el elemento i al arbol y retorna un puntero a la
 // cabeza de este
-#define insert(ctx, arbol, i) _Generic((arbol), \
-  Avl*: insert_avl, \
-  SplayTree*: insert_spl \
+#define insert(ctx, arbol, i) _Generic((ctx), \
+  AvlContext*: insert_avl, \
+  SplayTreeContext*: insert_spl \
 )(ctx, arbol, i)
+
+#define copy(out, ctx, nueva_raiz, raiz_original) _Generic((out), \
+  AvlContext*: copy_avl, \
+  SplayTreeContext*: copy_spl \
+)(out, ctx, nueva_raiz, raiz_original)
 
 #define inorder(arbol) _Generic((arbol), \
   Avl*: inorder_avl, \
@@ -59,5 +68,24 @@ es necesario hacerlas genéricas
   AvlContext*: delete_avl, \
   SplayTreeContext*: delete_spl \
 )(ctx)
+
+int compare_asc(const void *a, const void *b);
+
+typedef int (*Generador)(unsigned int N);
+
+// Se va a tomar lambda = log(31/32) ~ 0.014 ya que así
+// se facilita el calculo de la probabilidad y el sampleo
+// de los datos.
+// Esto implica que exp(-lambda) = 31/32
+// La distribución que nos dan es una geometrica de
+// parametro 1-exp(-lambda) = 1/32
+int geom(unsigned int N);
+
+int unif(unsigned int N);
+
+int seq(unsigned int N);
+
+void to_array(Avl *arbol, unsigned int *lista, int *idx);
+
 
 #endif

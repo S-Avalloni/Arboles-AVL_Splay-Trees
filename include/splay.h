@@ -70,6 +70,8 @@ SplayTree* search_spl(SplayTree* arbol, unsigned int x);
 // recalcula las alturas de los subarboles tocados 
 SplayTree* insert_spl(SplayTreeContext* ctx, SplayTree* arbol, unsigned int x);
 
+int copy_spl(SplayTreeContext* out, SplayTreeContext* ctx, SplayTree** nueva_raiz, SplayTree* raiz_original);
+
 void inorder_spl(SplayTree* arbol);
 
 void delete_spl(SplayTreeContext* ctx);

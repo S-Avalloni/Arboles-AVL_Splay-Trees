@@ -56,6 +56,8 @@ Avl* search_avl(Avl* arbol, unsigned int x);
 // valor pero es necesario en caso de que se modifique la raiz
 Avl* insert_avl(AvlContext* ctx, Avl* arbol, unsigned int x);
 
+int copy_avl(AvlContext* out, AvlContext* ctx, Avl** nueva_raiz, Avl* raiz_original);
+
 void inorder_avl(Avl* arbol);
 
 void delete_avl(AvlContext* ctx);
