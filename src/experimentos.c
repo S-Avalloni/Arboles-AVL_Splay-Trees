@@ -151,82 +151,110 @@ int working_set() {
     perror("No se pudo alocar memoria para el Working set");
     return 1;
   }
+
+  for (int i = 0; i < 1000000; i++) {
+    W_set[i] = elementos[unif(N)];
+  }
   
   int W = 10;
 
-  SplayTree* arbol_og_spl = NULL;
-  SplayTreeContext* ctx_og_spl = init_ctx_spl(N);
-
-  Avl* arbol_og_avl = NULL;
-  AvlContext* ctx_og_avl = init_ctx_avl(N);
-
-  for (int j = 0; j<N; j++) {
-    arbol_og_spl = insert(ctx_og_spl, arbol_og_spl, elementos[j]);
-    arbol_og_avl = insert(ctx_og_avl, arbol_og_avl, elementos[j]);
-  }
-
-  SplayTree* arbol_spl = NULL;
-  SplayTreeContext* ctx_spl = init_ctx_spl(N);
-
-  Avl* arbol_avl = NULL;
-  AvlContext* ctx_avl = init_ctx_avl(N);
-
+  clock_t ahora = clock();
   
-  for(int exp = 1; exp <= 6; exp++) {
-    
-    for (int j = 0; j<W; j++) {
-      W_set[j] = elementos[unif(N)];
+  pid_t pid = fork();
+
+  srand(ahora);
+
+  if (pid != 0) { // Padre (Splay)
+    SplayTree* arbol_og_spl = NULL;
+    SplayTreeContext* ctx_og_spl = init_ctx_spl(N);
+
+    for (int j = 0; j<N; j++) {
+      arbol_og_spl = insert(ctx_og_spl, arbol_og_spl, elementos[j]);
     }
-    printf("Working set %d armado\n", W);
-    pid_t pid = fork();
 
-    if (pid != 0) { // Padre
+    SplayTree* arbol_spl = NULL;
+    SplayTreeContext* ctx_spl = init_ctx_spl(N);
+
+    clock_t start_spl, end_spl;
+    double cpu_time_used_spl;
+
+    for(int exp = 1; exp <= 6; exp++) {
+      
       arbol_spl = NULL;
-
       copy(ctx_spl, ctx_og_spl, &arbol_spl, arbol_og_spl);
 
-      clock_t start_spl, end_spl;
+
       start_spl = clock();
       for (int j = 0; j < 10*c*N; j++) {
         arbol_spl = search(arbol_spl, W_set[unif(W)]);
       }
       end_spl = clock();
+      cpu_time_used_spl = ((double) (end_spl - start_spl)) / CLOCKS_PER_SEC;
 
-      printf("%f segundos busqueda spl W: 10^%d\n", ((double) (end_spl - start_spl)) / CLOCKS_PER_SEC, exp);
-      waitpid(pid, NULL, 0);
-    } else { // Hijo
+      printf("%f segundos busqueda spl W: 10^%d\n", cpu_time_used_spl, exp);
       
+      W *= 10;
+    }
+
+    delete(ctx_og_spl);
+    delete(ctx_spl);
+
+  } else {
+    Avl* arbol_og_avl = NULL;
+    AvlContext* ctx_og_avl = init_ctx_avl(N);
+
+    for (int j = 0; j<N; j++) {
+      arbol_og_avl = insert(ctx_og_avl, arbol_og_avl, elementos[j]);
+    }
+
+    Avl* arbol_avl = NULL;
+    AvlContext* ctx_avl = init_ctx_avl(N);
+
+    clock_t start_avl, end_avl;
+    double cpu_time_used_avl;
+
+    for(int exp = 1; exp <= 6; exp++) {
+
       arbol_avl = NULL;
       copy(ctx_avl, ctx_og_avl, &arbol_avl, arbol_og_avl);
 
-      clock_t start_avl, end_avl;
+
       start_avl = clock();
       for (int j = 0; j < 10*c*N; j++) {
         search(arbol_avl, W_set[unif(W)]);
       }
       end_avl = clock();
+      cpu_time_used_avl = ((double) (end_avl - start_avl)) / CLOCKS_PER_SEC;
 
-      printf("%f segundos busqueda avl W: 10^%d\n", ((double) (end_avl - start_avl)) / CLOCKS_PER_SEC, exp);
-      _exit(0);
+      printf("%f segundos busqueda avl W: 10^%d\n", cpu_time_used_avl, exp);      
+    
+      W *= 10;
     }
 
-    W *= 10;
+    delete(ctx_og_avl);
+    delete(ctx_avl);
   }
 
   free(W_set);
   free(elementos);
-  delete(ctx_avl);
-  delete(ctx_spl);
-  delete(ctx_og_avl);
-  delete(ctx_og_spl);
+
+  if (pid != 0) {
+    waitpid(pid, NULL, 0);
+  } else {
+    exit(0);
+  }
+
   return 0;
 }
 
 int main() {
-  // if (seq_access() == 1) {
-  //   perror("Hubo un error al hacer el experimento de Sequential Access Theorem");
-  //   return 1;
-  // };
+  if (seq_access() == 1) {
+    perror("Hubo un error al hacer el experimento de Sequential Access Theorem");
+    return 1;
+  };
 
-  working_set();
+  if (working_set() == 1) {
+    perror("Hubo un error al hacer el experimento de Working Set Theorem");
+    return 1;
+  }
 }
