@@ -6,10 +6,7 @@ trees = build/trees.o
 say:
 	cat Makefile
 
-build: $(avl) $(splay) $(trees) main const base experimentos 
-
-run-main: build/main
-	build/main
+build: $(avl) $(splay) $(trees) const base experimentos 
 
 run-const: build/const
 	build/const
@@ -20,16 +17,11 @@ run-base: build/base
 run-experimentos: build/experimentos
 	build/experimentos
 
-main: build/main
-
 const: build/const
 
 base: build/base
 
 experimentos: build/experimentos
-
-build/main: src/main.c $(trees)
-	gcc $(flags) $(trees) $(avl) $(splay) src/main.c -o build/main
 
 build/const: src/const.c
 	gcc $(flags) src/const.c -o build/const
@@ -48,6 +40,9 @@ $(splay): include/splay.h include/splay.c
 
 $(trees): include/trees.h include/trees.c $(avl) $(splay)
 	gcc $(flags) -c include/trees.c -o $(trees)
+
+clean-d:
+	rm -f data/*
 
 clean-x:
 	rm -f build/*
