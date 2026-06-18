@@ -10,12 +10,20 @@ typedef struct Nodo_Avl { // Sería lo que se define como r(A, B)
   unsigned int altura;
 } Avl;
 
+// Lista de Avl's indice del ultimo y la capacidad maxima
+// de esta lista, esto para mejorar el cache locality y tener 
+// que hacer un solo malloc por arbol
 typedef struct Memoria_avl {
   Avl* pool;
   int idx;
   int capacity;
 } AvlContext;
 
+// Se inicializa la memoria que va a contener al arbol,
+// esta funcion retorna un puntero al contexto donde se
+// va a encontrar el arbol.
+// Size debe ser suficientemente grande para almacenar
+// todos los nodos (i.e. size > numero de nodos maximos)
 AvlContext* init_ctx_avl(unsigned int size);
 
 // arbol: puntero a la raiz del arbol al que se le consulta
@@ -56,10 +64,26 @@ Avl* search_avl(Avl* arbol, unsigned int x);
 // valor pero es necesario en caso de que se modifique la raiz
 Avl* insert_avl(AvlContext* ctx, Avl* arbol, unsigned int x);
 
+// ctx: contexto de entrada
+// out: contexto de salida
+// nueva_raiz: posición de memoria del puntero donde se quiere poner la raíz 
+//              del contexto de entrada
+// raiz_original: puntero a la raiz del arbol del contexto ctx
+// Hace una copia de todo el contexto del arbol, O(N) en vez de O(Nlog(N))
+// que sería volver a insertar todo
+// Todos los punteros se arreglan para no apuntar a las posiciones originales sinó a las
+// correspondientes relativas a la posición de out
 int copy_avl(AvlContext* out, AvlContext* ctx, Avl** nueva_raiz, Avl* raiz_original);
 
+// arbol: puntero al nodo desde el que se quiere realizar la 
+//        operación
+// imprime en orden los valores a los que se puede llegar 
+// desde el nodo arbol
 void inorder_avl(Avl* arbol);
 
+// ctx: contexto que se quiere liberar de memoria
+// libera la lista pool del contexto, libera el puntero
+// a ctx y deja ambos punteros en NULL
 void delete_avl(AvlContext* ctx);
 
 #endif
